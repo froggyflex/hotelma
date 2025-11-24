@@ -1,0 +1,1 @@
+export const calendarInit=()=>console.log('Visual calendar ready')

@@ -1,0 +1,32 @@
+{
+  "rooms": [
+    {
+      "id": "617973af-ce24-4bec-a486-60c76f58611f",
+      "name": "331",
+      "type": "Double",
+      "capacity": 2,
+      "status": "clean"
+    },
+    {
+      "id": "46763e7e-85ed-4a73-99f5-ccfe6e7a1475",
+      "name": "332",
+      "type": "Double",
+      "capacity": 2,
+      "status": "clean"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "8e376fba-9007-4d43-81b7-91fabb019196",
+      "guestName": "Test booking",
+      "room": "332",
+      "checkIn": "2025-11-24",
+      "checkOut": "2025-11-27",
+      "adults": 2,
+      "kids": 0,
+      "channel": "Direct",
+      "price": 250,
+      "notes": "test remarkjs"
+    }
+  ]
+}

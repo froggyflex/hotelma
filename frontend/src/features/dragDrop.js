@@ -1,0 +1,1 @@
+export const enableDragDrop=()=>console.log('Drag-drop active')

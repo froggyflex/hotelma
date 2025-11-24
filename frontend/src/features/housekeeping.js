@@ -1,0 +1,1 @@
+export const housekeepingStatus=['clean','dirty','in-progress']

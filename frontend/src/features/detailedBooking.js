@@ -1,0 +1,1 @@
+export const detailedFields=['guestName','adults','kids','notes','channel','price']
