@@ -3,7 +3,8 @@ import axios from 'axios'
 import { jsPDF } from "jspdf"
 
 const API = import.meta.env.VITE_API_URL;
-const URL = axios.get(`${API}/bookings`);
+const URL  = `${API}/bookings`;
+const URLR = `${API}/rooms`;
 const emptyBooking = {
   guestName: '',
   room: '',

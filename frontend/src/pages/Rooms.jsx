@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL;
-const URL  = axios.get(`${API}/bookings`);
-const URLR = axios.get(`${API}/rooms`);
+const URL  = `${API}/bookings`;
+const URLR = `${API}/rooms`;
 
 const emptyRoom = { name: '', type: 'Double', capacity: 2, status: 'clean' }
 
