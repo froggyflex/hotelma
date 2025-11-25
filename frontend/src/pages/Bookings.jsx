@@ -72,7 +72,7 @@ export default function Bookings() {
   }
 
   const handleUpdate = (updated) => {
-    axios.put(URL+`${updated.id}`, updated).then(() => {
+    axios.put(`${URL}${updated.id}`, updated).then(() => {
       setSelected(null)
       load()
     })
@@ -80,7 +80,7 @@ export default function Bookings() {
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this booking?')) return
-    axios.delete(URL+`${id}`).then(load)
+    axios.delete(`${URL}${updated.id}`, updated).then(load)
   }
 
   // 🔎 Apply date filter: show only bookings where the selected day

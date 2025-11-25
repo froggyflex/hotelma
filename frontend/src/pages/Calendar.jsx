@@ -67,9 +67,9 @@ export default function Calendar() {
       alert('Too many overlapping bookings in target room to auto-swap.')
       return
     }
-
+    //`${URL}${updated.id}`, updated
     Promise.all(
-      updates.map((b) => axios.put(URL+`${b.id}`, b))
+      updates.map((b) => axios.put(`${URL}`+`${b.id}`, b))
     ).then(load)
   }
 
