@@ -69,7 +69,7 @@ export default function Calendar() {
     }
     //`${URL}${updated.id}`, updated
     Promise.all(
-      updates.map((b) => axios.put(`${URL}`+`${b.id}`, b))
+      updates.map((b) => axios.put(`${URL}/${b.id}`, b))
     ).then(load)
   }
 
