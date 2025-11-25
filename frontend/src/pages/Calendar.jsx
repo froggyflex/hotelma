@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+const API = import.meta.env.VITE_API_URL;
+const URL  = axios.get(`${API}/bookings`);
+const URLR = axios.get(`${API}/rooms`);
+
 function addDays(dateStr, days) {
   const d = new Date(dateStr)
   d.setDate(d.getDate() + days)
@@ -28,8 +32,8 @@ export default function Calendar() {
   const dayList = eachDay(start, daysToShow)
 
   const load = () => {
-    axios.get('http://localhost:4000/bookings').then((res) => setBookings(res.data))
-    axios.get('http://localhost:4000/rooms').then((res) => setRooms(res.data))
+    axios.get(URL).then((res)  => setBookings(res.data))
+    axios.get(URLR).then((res) => setRooms(res.data))
   }
 
   useEffect(() => {
@@ -65,7 +69,7 @@ export default function Calendar() {
     }
 
     Promise.all(
-      updates.map((b) => axios.put(`http://localhost:4000/bookings/${b.id}`, b))
+      updates.map((b) => axios.put(URL+`${b.id}`, b))
     ).then(load)
   }
 

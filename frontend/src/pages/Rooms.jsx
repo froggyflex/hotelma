@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+const API = import.meta.env.VITE_API_URL;
+const URL  = axios.get(`${API}/bookings`);
+const URLR = axios.get(`${API}/rooms`);
+
 const emptyRoom = { name: '', type: 'Double', capacity: 2, status: 'clean' }
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([])
   const [form, setForm] = useState(emptyRoom)
 
-  const load = () => axios.get('http://localhost:4000/rooms').then((res) => setRooms(res.data))
+  const load = () => axios.get(URLR).then((res) => setRooms(res.data))
   useEffect(() => {
     load()
   }, [])
 
   const handleCreate = () => {
-    axios.post('http://localhost:4000/rooms', form).then(() => {
+    axios.post(URLR, form).then(() => {
       setForm(emptyRoom)
       load()
     })

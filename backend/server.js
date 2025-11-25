@@ -1,3 +1,5 @@
+
+
 const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
@@ -101,6 +103,8 @@ app.delete('/bookings/:id', (req, res) => {
 })
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => {
-  console.log('Backend listening on http://localhost:' + PORT)
-})
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+
+//app.listen(PORT, () => {
+  //console.log('Backend listening on http://localhost:' + PORT)
+//})

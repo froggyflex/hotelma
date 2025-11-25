@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+const API = import.meta.env.VITE_API_URL;
+const URL  = axios.get(`${API}/bookings`);
+const URLR = axios.get(`${API}/rooms`);
+
 export default function Housekeeping() {
   const [rooms, setRooms] = useState([])
 
-  const load = () => axios.get('http://localhost:4000/rooms').then((res) => setRooms(res.data))
+  const load = () => axios.get(URLR).then((res) => setRooms(res.data))
   useEffect(() => {
     load()
   }, [])
 
   const updateStatus = (room, status) => {
     axios
-      .put(`http://localhost:4000/rooms/${room.id}`, { ...room, status })
+      .put(URLR+`${room.id}`, { ...room, status })
       .then(() => load())
   }
 

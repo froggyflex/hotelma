@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+const API = import.meta.env.VITE_API_URL;
+const URL  = axios.get(`${API}/bookings`);
+const URLR = axios.get(`${API}/rooms`);
+
 export default function Dashboard() {
   const [bookings, setBookings] = useState([])
   const [rooms, setRooms] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:4000/bookings').then((res) => setBookings(res.data))
-    axios.get('http://localhost:4000/rooms').then((res) => setRooms(res.data))
+    axios.get(URL).then((res) => setBookings(res.data))
+    axios.get(URLR).then((res) => setRooms(res.data))
   }, [])
 
   const todayStr = new Date().toISOString().slice(0, 10)

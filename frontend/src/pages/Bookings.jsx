@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { jsPDF } from "jspdf"
 
+const API = import.meta.env.VITE_API_URL;
+const URL = axios.get(`${API}/bookings`);
 const emptyBooking = {
   guestName: '',
   room: '',
@@ -55,21 +57,21 @@ export default function Bookings() {
   const [filterDate, setFilterDate] = useState("")
 
   const load = () =>
-    axios.get('http://localhost:4000/bookings').then((res) => setBookings(res.data))
+    axios.get(URL).then((res) => setBookings(res.data))
 
   useEffect(() => {
     load()
   }, [])
 
   const handleCreate = () => {
-    axios.post('http://localhost:4000/bookings', form).then(() => {
+    axios.post(URL, form).then(() => {
       setForm(emptyBooking)
       load()
     })
   }
 
   const handleUpdate = (updated) => {
-    axios.put(`http://localhost:4000/bookings/${updated.id}`, updated).then(() => {
+    axios.put(URL+`${updated.id}`, updated).then(() => {
       setSelected(null)
       load()
     })
@@ -77,7 +79,7 @@ export default function Bookings() {
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this booking?')) return
-    axios.delete(`http://localhost:4000/bookings/${id}`).then(load)
+    axios.delete(URL+`${id}`).then(load)
   }
 
   // 🔎 Apply date filter: show only bookings where the selected day
