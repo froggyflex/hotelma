@@ -23,18 +23,19 @@ export function buildInvoiceXML({
        1. invoiceHeader
   ----------------------------------------------------- */
   function buildInvoiceHeader(settings, invoice) {
+      const today = getTodayLocalISO();
       return {
         invoiceHeader: {
           series: settings.series || "A",
           aa: invoice.aa, // auto-increment from settings.json
-          issueDate:  new Date().toISOString().slice(0, 10),
+          issueDate:  today,
           invoiceType: invoice.invoiceType, // 1.1 or 2.2 chosen by user
           currency: "EUR",
 
           // Required by schema v1.0.12
           vatPaymentSuspension: false,
           selfPricing: false,
-          dispatchDate: new Date().toISOString().slice(0, 10),
+          dispatchDate: today,
           dispatchTime: "00:00:00",
           vehicleNumber: "",
           movePurpose: "",
@@ -44,7 +45,13 @@ export function buildInvoiceXML({
       };
   }
 
-
+  function getTodayLocalISO() {
+    const d = new Date();
+    const year  = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day   = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
   /* -----------------------------------------------------
        2. issuer (hotel)
   ----------------------------------------------------- */
