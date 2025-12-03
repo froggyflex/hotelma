@@ -27,14 +27,14 @@ export function buildInvoiceXML({
         invoiceHeader: {
           series: settings.series || "A",
           aa: invoice.aa, // auto-increment from settings.json
-          issueDate: invoice.issueDate || new Date().toISOString().slice(0, 10),
+          issueDate:  new Date().toISOString().slice(0, 10),
           invoiceType: invoice.invoiceType, // 1.1 or 2.2 chosen by user
           currency: "EUR",
 
           // Required by schema v1.0.12
           vatPaymentSuspension: false,
           selfPricing: false,
-          dispatchDate: invoice.issueDate || new Date().toISOString().slice(0, 10),
+          dispatchDate: new Date().toISOString().slice(0, 10),
           dispatchTime: "00:00:00",
           vehicleNumber: "",
           movePurpose: "",
