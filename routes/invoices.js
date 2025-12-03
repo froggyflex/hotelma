@@ -179,7 +179,7 @@ router.post("/submit", async (req, res) => {
       dateSubmitted: new Date(),
       status: mark ? "submitted" : "error",
     });
-
+    console.log(newInvoice);
     // Respond to frontend
     res.json({
       success: true,
