@@ -1,0 +1,81 @@
+{
+  "rooms": [
+    {
+      "id": "617973af-ce24-4bec-a486-60c76f58611f",
+      "name": "331",
+      "type": "Double",
+      "capacity": 2,
+      "status": "clean"
+    },
+    {
+      "id": "46763e7e-85ed-4a73-99f5-ccfe6e7a1475",
+      "name": "333",
+      "type": "Double",
+      "capacity": 2,
+      "status": "clean"
+    },
+    {
+      "id": "46763e7e-85ed-4a73-99f5-ccfe6e7a1476",
+      "name": "332",
+      "type": "Double",
+      "capacity": 2,
+      "status": "clean"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "8e376fba-9007-4d43-81b7-91fabb019196",
+      "guestName": "Test booking",
+      "room": "331",
+      "checkIn": "2025-11-24",
+      "checkOut": "2025-12-05",
+      "adults": 2,
+      "kids": 0,
+      "channel": "Direct",
+      "price": 50,
+      "notes": "test remarks",
+      "startIndex": 23,
+      "width": 210.20000000000002,
+      "left": 1642.2,
+      "continuedLeft": false,
+      "continuedRight": false,
+      "colorIndex": 0
+    },
+    {
+      "id": "dd59d03d-8e21-4b37-aec8-a5a22cbc6936",
+      "guestName": "Tallaros",
+      "room": "333",
+      "checkIn": "2025-12-05",
+      "checkOut": "2025-12-10",
+      "adults": 1,
+      "kids": 0,
+      "channel": "Direct",
+      "price": 45,
+      "notes": "",
+      "startIndex": 0,
+      "width": 479.67741935483866,
+      "left": 0,
+      "continuedLeft": false,
+      "continuedRight": false,
+      "colorIndex": 0
+    },
+    {
+      "id": "915aa524-817a-4230-a6fb-a0b76fe734f4",
+      "guestName": "Somos",
+      "room": "333",
+      "checkIn": "2025-12-12",
+      "checkOut": "2025-12-14",
+      "adults": 2,
+      "kids": 0,
+      "channel": "Direct",
+      "price": 40,
+      "notes": "",
+      "startIndex": 11,
+      "width": 134.19354838709677,
+      "left": 760.0645161290322,
+      "continuedLeft": false,
+      "continuedRight": false,
+      "colorIndex": 1
+    }
+  ]
+}

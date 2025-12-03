@@ -1,0 +1,70 @@
+{
+  "hotelInfo": {
+    "name": "Luis Pool & Family",
+    "vatNumber": "094204948",
+    "country": "GR",
+    "address": "Mastichari, Kos",
+    "street": "Mastichari",
+    "postalCode": "85302",
+    "city": "Mastichari",
+    "number": "0",
+    "email": "info@luispool.com",
+    "phone": "+30 22420 59094"
+  },
+  "invoiceDefaults": {
+    "series": "A",
+    "vatAccommodation": 0.24,
+    "vatExtras": 0.24,
+    "accommodationTax": 2
+  },
+  "aade": {
+    "mode": "DEV",
+    "username": "frogflex",
+    "subscriptionKey": "01a1be0e3c21829ae85b32666df2af8c"
+  },
+  "invoiceSeries": {
+    "currentSeries": "A",
+    "nextAA": 102,
+    "maxAA": 999,
+    "allowedSeries": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ]
+  },
+  "accountingCodes": {
+    "invoiceTypes": {
+      "b2c": "11.3",
+      "b2b": "1.1",
+      "creditNote": "5.2"
+    },
+    "incomeCategories": {
+      "accommodation": {
+        "type": 1,
+        "category": 5
+      },
+      "accommodationTax": {
+        "type": 1,
+        "category": 95
+      },
+      "extras": {
+        "type": 1,
+        "category": 1
+      }
+    },
+    "vatCategories": {
+      "accommodation": 2,
+      "extras": 1
+    },
+    "vatExemptions": {
+      "accommodationTax": 27
+    },
+    "paymentMethodMapping": {
+      "cash": 3,
+      "card": 1,
+      "bank": 5,
+      "iris": 8
+    }
+  }
+}

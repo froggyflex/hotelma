@@ -1,0 +1,193 @@
+{
+  "nextAA": 3,
+  "invoices": [
+    {
+      "payload": {
+        "issuer": {
+          "name": "Luis Pool & Family",
+          "vatNumber": "094204948",
+          "country": "GR",
+          "address": "Mastichari, Kos",
+          "email": "info@luispool.com",
+          "phone": "+30 22420 59094"
+        },
+        "customer": {
+          "type": "B2C",
+          "name": "ANDREAS ILIAS TALLAROS",
+          "vatNumber": "",
+          "idDoc": "12312",
+          "address": "MASTICHARI",
+          "country": "GR",
+          "postalCode": "85302"
+        },
+        "invoiceHeader": {
+          "series": "A",
+          "aa": 99,
+          "issueDate": "2025-12-01",
+          "currency": "EUR",
+          "invoiceType": "11.3"
+        },
+        "invoiceDetails": [
+          {
+            "lineNumber": 1,
+            "netValue": 72.58,
+            "vatCategory": 1,
+            "vatAmount": 17.42,
+            "description": "Accommodation: 2 nights × €45/night",
+            "quantity": 2,
+            "unitPrice": 45,
+            "incomeClassification": [
+              {
+                "classificationType": 1,
+                "classificationCategory": "1.5",
+                "amount": 72.58
+              }
+            ],
+            "lineComments": "Room 333 | Check-in 2025-12-04 | Check-out 2025-12-06"
+          },
+          {
+            "lineNumber": 2,
+            "netValue": 4,
+            "vatCategory": 7,
+            "vatAmount": 0,
+            "description": "Accommodation Tax (€2/night)",
+            "quantity": 2,
+            "unitPrice": 2,
+            "incomeClassification": [
+              {
+                "classificationType": 1,
+                "classificationCategory": "1.95",
+                "amount": 4
+              }
+            ],
+            "vatExemptionCategory": 27
+          }
+        ],
+        "paymentMethods": [
+          {
+            "type": 3,
+            "amount": 94
+          }
+        ],
+        "totalAmount": 94,
+        "nights": 2,
+        "rate": 45,
+        "accommodationTaxTotal": 4,
+        "notes": "",
+        "bookingId": "dd59d03d-8e21-4b37-aec8-a5a22cbc6936",
+        "bookingInfo": {
+          "id": "dd59d03d-8e21-4b37-aec8-a5a22cbc6936",
+          "guestName": "Tallaros",
+          "room": "333",
+          "checkIn": "2025-12-04",
+          "checkOut": "2025-12-06",
+          "adults": 1,
+          "kids": 0,
+          "channel": "Direct",
+          "price": 45,
+          "notes": ""
+        },
+        "aa": 99
+      },
+      "aa": 99,
+      "series": "A",
+      "xmlSent": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<InvoicesDoc xmlns=\"http://www.aade.gr/myDATA/invoice/v1.0\">\n\n  <invoice>\n\n    \n    <issuer>\n      <vatNumber>094204948</vatNumber>\n      <country>GR</country>\n      <branch>0</branch>\n    </issuer>\n  \n    \n\n    <invoiceHeader>\n      <series>A</series>\n      <aa>99</aa>\n      <issueDate>2025-12-01</issueDate>\n      <invoiceType>11.3</invoiceType>\n      <currency>EUR</currency>\n    </invoiceHeader>\n\n    \n            <paymentMethods>\n              \n                <paymentMethodDetails>\n                  <type>3</type>\n                  <amount>94.00</amount>\n                </paymentMethodDetails>\n              \n            </paymentMethods>\n          \n\n    \n        <invoiceDetails>\n          <lineNumber>1</lineNumber>\n          <netValue>72.58</netValue>\n\n          <vatCategory>1</vatCategory>\n          <vatAmount>17.42</vatAmount>\n\n          \n\n          <lineComments>Room 333 | Check-in 2025-12-04 | Check-out 2025-12-06</lineComments>\n\n          <incomeClassification>\n            <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">E3_561_001</classificationType>\n            <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n            <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n              72.58\n            </amount>\n          </incomeClassification>\n        </invoiceDetails>\n      \n        <invoiceDetails>\n          <lineNumber>2</lineNumber>\n          <netValue>4.00</netValue>\n\n          <vatCategory>7</vatCategory>\n          <vatAmount>0.00</vatAmount>\n\n          <vatExemptionCategory>1</vatExemptionCategory>\n\n          \n\n          <incomeClassification>\n            <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">E3_561_001</classificationType>\n            <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n            <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n              4.00\n            </amount>\n          </incomeClassification>\n        </invoiceDetails>\n      \n\n    \n    <invoiceSummary>\n      <totalNetValue>76.58</totalNetValue>\n      <totalVatAmount>17.42</totalVatAmount>\n      <totalWithheldAmount>0.00</totalWithheldAmount>\n\n      <totalFeesAmount>0.00</totalFeesAmount>\n      <totalStampDutyAmount>0.00</totalStampDutyAmount>\n      <totalOtherTaxesAmount>0.00</totalOtherTaxesAmount>\n      <totalDeductionsAmount>0.00</totalDeductionsAmount>\n\n      <totalGrossValue>94.00</totalGrossValue>\n\n      <incomeClassification>\n        <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\" >E3_561_001</classificationType>\n        <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n        <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n          76.58\n        </amount>\n      </incomeClassification>\n    </invoiceSummary>\n  \n\n  </invoice>\n\n</InvoicesDoc>",
+      "aadeRawResponse": "<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/\">&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;\r\n&lt;ResponseDoc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"&gt;\r\n  &lt;response&gt;\r\n    &lt;index&gt;1&lt;/index&gt;\r\n    &lt;invoiceUid&gt;08530E946D279B36136DB86A688F6D74260B713C&lt;/invoiceUid&gt;\r\n    &lt;invoiceMark&gt;400001957706209&lt;/invoiceMark&gt;\r\n    &lt;authenticationCode&gt;6B421E88A8A604E04C151BE493AD0A62EFD273F7&lt;/authenticationCode&gt;\r\n    &lt;qrUrl&gt;https://mydataapidev.aade.gr/TimologioQR/QRInfo?q=U%2fO7PMNGDih5PRMJMAWE1XJmyR8a0zlJRGwy9auBJ7RRlwdu1fqzYh6AXs0eql1Fgzo4lOeD4NZYyIHeJKxEJ2CGFpfA9FOjDOgSmRphAW0%3d&lt;/qrUrl&gt;\r\n    &lt;statusCode&gt;Success&lt;/statusCode&gt;\r\n  &lt;/response&gt;\r\n&lt;/ResponseDoc&gt;</string>",
+      "mark": "400001957706209",
+      "dateSubmitted": "2025-12-01T00:49:46.189Z"
+    },
+    {
+      "payload": {
+        "issuer": {
+          "name": "Luis Pool & Family",
+          "vatNumber": "094204948",
+          "country": "GR",
+          "address": "Mastichari, Kos",
+          "email": "info@luispool.com",
+          "phone": "+30 22420 59094"
+        },
+        "customer": {
+          "type": "B2C",
+          "name": "ANDREAS ILIAS TALLAROS",
+          "vatNumber": "",
+          "idDoc": "1234",
+          "address": "MASTICHARI",
+          "country": "GR",
+          "postalCode": "85302"
+        },
+        "invoiceHeader": {
+          "series": "A",
+          "aa": 100,
+          "issueDate": "2025-12-03",
+          "currency": "EUR",
+          "invoiceType": "11.3"
+        },
+        "invoiceDetails": [
+          {
+            "lineNumber": 1,
+            "netValue": 254.03,
+            "vatCategory": 1,
+            "vatAmount": 60.97,
+            "description": "Accommodation: 7 nights × €45/night",
+            "quantity": 7,
+            "unitPrice": 45,
+            "incomeClassification": [
+              {
+                "classificationType": 1,
+                "classificationCategory": "1.5",
+                "amount": 254.03
+              }
+            ],
+            "lineComments": "Room 331 | Check-in 2025-12-03 | Check-out 2025-12-10"
+          },
+          {
+            "lineNumber": 2,
+            "netValue": 14,
+            "vatCategory": 7,
+            "vatAmount": 0,
+            "description": "Accommodation Tax (€2/night)",
+            "quantity": 7,
+            "unitPrice": 2,
+            "incomeClassification": [
+              {
+                "classificationType": 1,
+                "classificationCategory": "1.95",
+                "amount": 14
+              }
+            ],
+            "vatExemptionCategory": 27
+          }
+        ],
+        "paymentMethods": [],
+        "totalAmount": 329,
+        "nights": 7,
+        "rate": 45,
+        "accommodationTaxTotal": 14,
+        "notes": "",
+        "bookingId": "69306972bb23e3081030ecf9",
+        "bookingInfo": {
+          "guestName": "Tallaros",
+          "room": "331",
+          "checkIn": "2025-12-03",
+          "checkOut": "2025-12-10",
+          "adults": 2,
+          "kids": 0,
+          "channel": "Direct",
+          "price": 45,
+          "notes": "",
+          "createdAt": "2025-12-03T16:46:42.830Z",
+          "updatedAt": "2025-12-03T16:46:53.182Z",
+          "__v": 0,
+          "id": "69306972bb23e3081030ecf9"
+        },
+        "aa": 100
+      },
+      "aa": 100,
+      "series": "A",
+      "xmlSent": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<InvoicesDoc xmlns=\"http://www.aade.gr/myDATA/invoice/v1.0\">\n\n  <invoice>\n\n    \n    <issuer>\n      <vatNumber>094204948</vatNumber>\n      <country>GR</country>\n      <branch>0</branch>\n    </issuer>\n  \n    \n\n    <invoiceHeader>\n      <series>A</series>\n      <aa>100</aa>\n      <issueDate>2025-12-03</issueDate>\n      <invoiceType>11.3</invoiceType>\n      <currency>EUR</currency>\n    </invoiceHeader>\n\n    \n            <paymentMethods>\n              <paymentMethodDetails>\n                <type>3</type>\n                <amount>329.00</amount>\n              </paymentMethodDetails>\n            </paymentMethods>\n          \n\n    \n        <invoiceDetails>\n          <lineNumber>1</lineNumber>\n          <netValue>254.03</netValue>\n\n          <vatCategory>1</vatCategory>\n          <vatAmount>60.97</vatAmount>\n\n          \n\n          <lineComments>Room 331 | Check-in 2025-12-03 | Check-out 2025-12-10</lineComments>\n\n          <incomeClassification>\n            <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">E3_561_001</classificationType>\n            <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n            <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n              254.03\n            </amount>\n          </incomeClassification>\n        </invoiceDetails>\n      \n        <invoiceDetails>\n          <lineNumber>2</lineNumber>\n          <netValue>14.00</netValue>\n\n          <vatCategory>7</vatCategory>\n          <vatAmount>0.00</vatAmount>\n\n          <vatExemptionCategory>1</vatExemptionCategory>\n\n          \n\n          <incomeClassification>\n            <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">E3_561_001</classificationType>\n            <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n            <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n              14.00\n            </amount>\n          </incomeClassification>\n        </invoiceDetails>\n      \n\n    \n    <invoiceSummary>\n      <totalNetValue>268.03</totalNetValue>\n      <totalVatAmount>60.97</totalVatAmount>\n      <totalWithheldAmount>0.00</totalWithheldAmount>\n\n      <totalFeesAmount>0.00</totalFeesAmount>\n      <totalStampDutyAmount>0.00</totalStampDutyAmount>\n      <totalOtherTaxesAmount>0.00</totalOtherTaxesAmount>\n      <totalDeductionsAmount>0.00</totalDeductionsAmount>\n\n      <totalGrossValue>329.00</totalGrossValue>\n\n      <incomeClassification>\n        <classificationType xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\" >E3_561_001</classificationType>\n        <classificationCategory xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">category1_1</classificationCategory>\n        <amount xmlns=\"https://www.aade.gr/myDATA/incomeClassificaton/v1.0\">\n          268.03\n        </amount>\n      </incomeClassification>\n    </invoiceSummary>\n  \n\n  </invoice>\n\n</InvoicesDoc>",
+      "aadeRawResponse": "<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/\">&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;\r\n&lt;ResponseDoc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"&gt;\r\n  &lt;response&gt;\r\n    &lt;index&gt;1&lt;/index&gt;\r\n    &lt;invoiceUid&gt;C0B6A0F2FCC4C724125A2F0302255185DCB586C1&lt;/invoiceUid&gt;\r\n    &lt;invoiceMark&gt;400001957986725&lt;/invoiceMark&gt;\r\n    &lt;authenticationCode&gt;31BCAAF678863FE09B050D1EBB1D9DF2775D8BD9&lt;/authenticationCode&gt;\r\n    &lt;qrUrl&gt;https://mydataapidev.aade.gr/TimologioQR/QRInfo?q=U%2fO7PMNGDih5PRMJMAWE1UkP16wZ%2b2Wbd2mOwJHQeUf%2b67uC7gdzeU2HlZWqeD25sVyt1LIBxKt3EeIDqfETpvU%2f4Aoz4QWbsPtIs8pwB4k%3d&lt;/qrUrl&gt;\r\n    &lt;statusCode&gt;Success&lt;/statusCode&gt;\r\n  &lt;/response&gt;\r\n&lt;/ResponseDoc&gt;</string>",
+      "mark": "400001957986725",
+      "dateSubmitted": "2025-12-03T16:47:54.433Z"
+    }
+  ]
+}
