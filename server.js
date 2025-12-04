@@ -159,6 +159,10 @@ app.delete("/bookings/:id", async (req, res) => {
   }
 });
 
+import availabilityRoutes from "./routes/availability.js";
+app.use("/availability", availabilityRoutes);
+
+
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
 
