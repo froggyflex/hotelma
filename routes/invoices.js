@@ -9,6 +9,7 @@ import path from "path";
 import axios from "axios";
 import buildMyDataXML from "../utils/xmlBuilder.js";
 import Invoice from "../models/Invoice.js";
+import { parseAaderResponse } from "../utils/parseAadeResponce.js";
 const router = express.Router();
 
 // ------------------------------------------------------------
@@ -165,9 +166,19 @@ router.post("/submit", async (req, res) => {
     });
 
     const rawXmlResponse = aadeResponse.data;
+ 
+
     const parsed = parseAadeResponse(rawXmlResponse);
     const mark = parsed?.invoiceMark || null;
 
+    if(mark == null || mark == ""){
+      
+        return res.status(400).json({
+        success: false,
+        errors: result.errors || [{ code: "AADE", message: result.error || "Unknown error" }],
+      });
+      
+    }
     // Save to MongoDB
     const newInvoice = await Invoice.create({
       payload,
@@ -179,7 +190,7 @@ router.post("/submit", async (req, res) => {
       dateSubmitted: new Date(),
       status: mark ? "submitted" : "error",
     });
-    console.log(newInvoice);
+    //console.log(newInvoice);
     // Respond to frontend
     res.json({
       success: true,

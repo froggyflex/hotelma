@@ -32,17 +32,7 @@ export default function buildMyDataXML(payload, settings) {
       amount: Number(pm.amount)
     }))
   : [];
-
-  function getVatRate(cat) {
-    switch (cat) {
-      case 1: return 0.24;  // 24%
-      case 2: return 0.13;  // 13%
-      case 3: return 0.06;  // 6%
-      case 7: return 0.00;  // exempt
-      default: return 0.24;
-    }
-  }
-
+ 
   const invoiceType = invoiceHeader.invoiceType;
 
   const isB2C = invoiceType === "11.3";
@@ -111,7 +101,7 @@ export default function buildMyDataXML(payload, settings) {
           <netValue>${line.netValue.toFixed(2)}</netValue>
 
           <vatCategory>${line.vatCategory}</vatCategory>
-          <vatAmount>${(line.netValue * getVatRate(line.vatCategory)).toFixed(2)}</vatAmount>
+          <vatAmount>${Number(line.vatAmount).toFixed(2)}</vatAmount>
 
           ${exempt ? `<vatExemptionCategory>1</vatExemptionCategory>` : ""}
 
@@ -139,7 +129,7 @@ export default function buildMyDataXML(payload, settings) {
    // Payments
     let paymentsXML = "";
     const totalNet = invoiceDetails.reduce((a, l) => a + l.netValue, 0);
-    const totalVat = invoiceDetails.reduce((a, l) => a + l.vatAmount, 0);
+    const totalVat = invoiceDetails.reduce((a, l) => a + Number(l.vatAmount), 0);
  
       // B2B must ALWAYS have paymentMethods
       if (isB2B) {
@@ -217,9 +207,7 @@ export default function buildMyDataXML(payload, settings) {
       <incomeClassification>
         <classificationType xmlns="https://www.aade.gr/myDATA/incomeClassificaton/v1.0" >${classificationType}</classificationType>
         <classificationCategory xmlns="https://www.aade.gr/myDATA/incomeClassificaton/v1.0">${classificationCategory}</classificationCategory>
-        <amount xmlns="https://www.aade.gr/myDATA/incomeClassificaton/v1.0">
-          ${totalNet.toFixed(2)}
-        </amount>
+        <amount xmlns="https://www.aade.gr/myDATA/incomeClassificaton/v1.0">${totalNet.toFixed(2)}</amount>
       </incomeClassification>
     </invoiceSummary>
   `;

@@ -13,7 +13,7 @@
   },
   "invoiceDefaults": {
     "series": "A",
-    "vatAccommodation": 0.24,
+    "vatAccommodation": 0.13,
     "vatExtras": 0.24,
     "accommodationTax": 2
   },
@@ -24,7 +24,7 @@
   },
   "invoiceSeries": {
     "currentSeries": "A",
-    "nextAA": 102,
+    "nextAA": 141,
     "maxAA": 999,
     "allowedSeries": [
       "A",
