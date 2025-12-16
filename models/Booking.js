@@ -6,9 +6,11 @@ const BookingSchema = new mongoose.Schema({
   room: { type: String, required: true },
   checkIn: { type: String, required: true },
   checkOut: { type: String, required: true },
-  adults: { type: Number, default: 2 },
-  kids: { type: Number, default: 0 },
+  adults: { type: Number, default: null },
+  kids: { type: Number, default: null },
   channel: { type: String, default: "Direct" },
+  totalAmount: { type: Number, default:0 }, // packet holiday total
+  deposit: { type: Number, default: 0 },         // upfront payment
   price: { type: Number, default: 0 },
   notes: { type: String, default: "" },
 }, { timestamps: true });
