@@ -12,6 +12,7 @@ const BookingSchema = new mongoose.Schema({
   totalAmount: { type: Number, default:0 }, // packet holiday total
   deposit: { type: Number, default: 0 },         // upfront payment
   price: { type: Number, default: 0 },
+  paid: { type: Boolean, default: false },
   notes: { type: String, default: "" },
 }, { timestamps: true });
 
