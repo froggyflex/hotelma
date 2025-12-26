@@ -44,7 +44,7 @@ app.post("/register-token", async (req, res) => {
   try {
     const { token } = req.body;
 
-    if (!req.user?.id) {
+    if (!req.user?.email) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
@@ -53,7 +53,7 @@ app.post("/register-token", async (req, res) => {
     }
 
     await User.findByIdAndUpdate(
-      req.user.id,
+      req.user.email,
       { $addToSet: { fcmTokens: token } },
       { new: true }
     );
