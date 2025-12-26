@@ -11,7 +11,7 @@ import invoiceRoutes from "./routes/invoices.js";
 import { v4 as uuid } from "uuid";
 import settingsRoutes from "./routes/settings.js";
 import notificationRoutes from "./routes/notifications.js";
-import User from "../models/User.js";
+import User from "./models/User.js";
 
 import { connectDB } from "./db.js";
 import Booking from "./models/Booking.js";
