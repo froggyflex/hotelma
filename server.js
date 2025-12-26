@@ -40,7 +40,7 @@ app.use("/api/settings", settingsRoutes);
 
 
 
-app.post("/register-token", authMiddleware, async (req, res) => {
+app.post("/register-token", async (req, res) => {
   try {
     const { token } = req.body;
 
