@@ -39,23 +39,33 @@ app.use("/api/settings", settingsRoutes);
 // --- ROOMS ---
 
 
+function requireAuth(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-app.post("/register-token", async (req, res) => {
+  try {
+    const user = JSON.parse(auth.replace("Bearer ", ""));
+    if (!user?.email) throw new Error();
+    req.user = user;
+    next();
+  } catch {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+}
+
+app.post("/register-token", requireAuth, async (req, res) => {
   try {
     const { token } = req.body;
-
-    if (!req.user?.email) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
 
     if (!token) {
       return res.status(400).json({ error: "Missing token" });
     }
 
-    await User.findByIdAndUpdate(
-      req.user.email,
-      { $addToSet: { fcmTokens: token } },
-      { new: true }
+    await User.updateOne(
+      { email: req.user.email },           
+      { $addToSet: { fcmTokens: token } }  
     );
 
     res.json({ success: true });
