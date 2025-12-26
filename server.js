@@ -39,20 +39,31 @@ app.use("/api/settings", settingsRoutes);
 // --- ROOMS ---
 
 
-app.post("/register-token", async (req, res) => {
-  const { token } = req.body;
-  const userId = req.user.id; // from auth middleware
+router.post("/register-token", authMiddleware, async (req, res) => {
+  try {
+    const { token } = req.body;
 
-  if (!token) {
-    return res.status(400).json({ error: "Missing token" });
+    if (!req.user?.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!token) {
+      return res.status(400).json({ error: "Missing token" });
+    }
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { $addToSet: { fcmTokens: token } },
+      { new: true }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ register-token error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  await User.findByIdAndUpdate(userId, {
-    $addToSet: { fcmTokens: token }, // prevents duplicates
-  });
-
-  res.json({ success: true });
 });
+
 
 // GET all rooms
 app.get("/rooms", async (req, res) => {
