@@ -67,7 +67,7 @@ app.post("/register-token", requireAuth, async (req, res) => {
       { email: req.user.email },           
       { $addToSet: { fcmTokens: token } },
       { upsert: true }
-      
+
     );
 
     res.json({ success: true });
@@ -211,25 +211,4 @@ app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
 
 import admin from "./firebaseAdmin.js";
 
-app.post("/api/notifications/test", async (req, res) => {
-  const { token } = req.body;
-
-  if (!token) {
-    return res.status(400).json({ error: "Missing token" });
-  }
-
-  try {
-    await admin.messaging().send({
-      token,
-      notification: {
-        title: "🏨 Luis Pool – Test",
-        body: "Notifications are working correctly 🎉",
-      },
-    });
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to send notification" });
-  }
-});
+ 
