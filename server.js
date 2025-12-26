@@ -10,6 +10,7 @@ import cors from "cors";
 import invoiceRoutes from "./routes/invoices.js";
 import { v4 as uuid } from "uuid";
 import settingsRoutes from "./routes/settings.js";
+import notificationRoutes from "./routes/notifications.js";
 
 import { connectDB } from "./db.js";
 import Booking from "./models/Booking.js";
@@ -33,6 +34,7 @@ app.use("/api/aade", statusRoutes);
 // --- IARP ---
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // --- ROOMS ---
 

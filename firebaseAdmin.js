@@ -1,7 +1,10 @@
 import admin from "firebase-admin";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
-
+ 
 if (!base64) {
   throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_BASE64");
 }
