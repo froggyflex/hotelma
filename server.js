@@ -65,7 +65,9 @@ app.post("/register-token", requireAuth, async (req, res) => {
 
     await User.updateOne(
       { email: req.user.email },           
-      { $addToSet: { fcmTokens: token } }  
+      { $addToSet: { fcmTokens: token } },
+      { upsert: true }
+      
     );
 
     res.json({ success: true });
