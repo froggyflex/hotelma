@@ -11,6 +11,7 @@ import invoiceRoutes from "./routes/invoices.js";
 import { v4 as uuid } from "uuid";
 import settingsRoutes from "./routes/settings.js";
 import notificationRoutes from "./routes/notifications.js";
+import User from "../models/User.js";
 
 import { connectDB } from "./db.js";
 import Booking from "./models/Booking.js";
@@ -34,9 +35,24 @@ app.use("/api/aade", statusRoutes);
 // --- IARP ---
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/settings", settingsRoutes);
-app.use("/api/notifications", notificationRoutes);
  
 // --- ROOMS ---
+
+
+app.post("/register-token", async (req, res) => {
+  const { token } = req.body;
+  const userId = req.user.id; // from auth middleware
+
+  if (!token) {
+    return res.status(400).json({ error: "Missing token" });
+  }
+
+  await User.findByIdAndUpdate(userId, {
+    $addToSet: { fcmTokens: token }, // prevents duplicates
+  });
+
+  res.json({ success: true });
+});
 
 // GET all rooms
 app.get("/rooms", async (req, res) => {
