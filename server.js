@@ -15,7 +15,6 @@ import notificationRoutes from "./routes/notifications.js";
 import { connectDB } from "./db.js";
 import Booking from "./models/Booking.js";
 import Room from "./models/Rooms.js";
-import User from "./models/User.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,23 +34,8 @@ app.use("/api/aade", statusRoutes);
 // --- IARP ---
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/settings", settingsRoutes);
-//app.use("/api/notifications", notificationRoutes);
-
-
-app.post("/register-token", async (req, res) => {
-  const { token } = req.body;
-  const userId = req.user.id; // from auth middleware
-
-  if (!token) {
-    return res.status(400).json({ error: "Missing token" });
-  }
-
-  await User.findByIdAndUpdate(userId, {
-    $addToSet: { fcmTokens: token }, // prevents duplicates
-  });
-
-  res.json({ success: true });
-});
+app.use("/api/notifications", notificationRoutes);
+ 
 // --- ROOMS ---
 
 // GET all rooms
