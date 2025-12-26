@@ -39,6 +39,7 @@ app.use("/api/settings", settingsRoutes);
 // --- ROOMS ---
 
 
+
 app.post("/register-token", authMiddleware, async (req, res) => {
   try {
     const { token } = req.body;
