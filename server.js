@@ -20,6 +20,8 @@ import Room from "./models/Rooms.js";
 import kitchenProductsRoutes from "./routes/kitchenProducts.js";
 import kitchenNotesRoutes from "./routes/kitchenNotes.js";
 import kitchenTablesRoutes from "./routes/kitchenTables.js";
+import kitchenOrdersRoutes from "./routes/kitchenOrders.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,11 +36,15 @@ connectDB(); // <-- start connection
 import statusRoutes from "./routes/aadeStatus.js";
 app.use("/api/aade", statusRoutes);
 
+//waiter mode API
+app.use("/api/kitchen/orders", kitchenOrdersRoutes);
+
 
 // Kitchen Admin API
 app.use("/api/kitchen/products", requireAuth, kitchenProductsRoutes);
 app.use("/api/kitchen/notes", requireAuth, kitchenNotesRoutes);
 app.use("/api/kitchen/tables", requireAuth, kitchenTablesRoutes);
+
 
        
 // --- IARP ---
