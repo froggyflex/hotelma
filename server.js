@@ -17,6 +17,10 @@ import { connectDB } from "./db.js";
 import Booking from "./models/Booking.js";
 import Room from "./models/Rooms.js";
 
+import kitchenProductsRoutes from "./routes/kitchenProducts.js";
+import kitchenNotesRoutes from "./routes/kitchenNotes.js";
+import kitchenTablesRoutes from "./routes/kitchenTables.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,11 +29,16 @@ app.use(cors())
 app.use(express.json())
 
 const DB_PATH = path.join(__dirname, 'data', 'db.json')
-
 connectDB(); // <-- start connection
 
 import statusRoutes from "./routes/aadeStatus.js";
 app.use("/api/aade", statusRoutes);
+
+
+// Kitchen Admin API
+app.use("/api/kitchen/products", requireAuth, kitchenProductsRoutes);
+app.use("/api/kitchen/notes", requireAuth, kitchenNotesRoutes);
+app.use("/api/kitchen/tables", requireAuth, kitchenTablesRoutes);
 
        
 // --- IARP ---
