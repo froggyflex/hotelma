@@ -53,6 +53,8 @@ app.use("/api/settings", settingsRoutes);
  
 // --- ROOMS ---
 
+import tableMapRoutes from "./routes/tableMapRoutes.js";
+app.use("/api/table-map", tableMapRoutes);
 
 function requireAuth(req, res, next) {
   const auth = req.headers.authorization;
