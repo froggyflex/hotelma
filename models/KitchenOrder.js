@@ -24,6 +24,7 @@ const KitchenOrderSchema = new mongoose.Schema(
         name: { type: String, required: true },
         notes: [String],
         customNote: String,
+        
         qty: { type: Number, required: true, default: 1 },
       },
     ],
