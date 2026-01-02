@@ -1,106 +1,176 @@
 import express from "express";
 import KitchenOrder from "../models/KitchenOrder.js";
- 
 
 const router = express.Router();
 
 /**
- * CREATE ORDER
+ * CREATE OR APPEND ORDER
+ * Used when waiter sends an order (first time or later)
  */
+
+// GET ACTIVE ORDER BY TABLE
+router.get("/active/:tableId", async (req, res) => {
+  try {
+    const order = await KitchenOrder.findOne({
+      "table.id": req.params.tableId,
+      status: "active",
+    });
+
+    res.json(order || null);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch active order" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
-    const { table, tableNote, items } = req.body;
+    const { table, items } = req.body;
 
-    if (!table?.id || !table?.name || !items?.length) {
-      return res.status(400).json({ error: "Invalid order payload" });
+    if (!table?.id || !items?.length) {
+      return res.status(400).json({ message: "Invalid payload" });
     }
 
-    const order = await KitchenOrder.create({
-      table,
-      tableNote,
-      items,
+    let order = await KitchenOrder.findOne({
+      tableId: table.id,
+      closedAt: null,
     });
 
+    if (!order) {
+      order = new KitchenOrder({
+        tableId: table.id,
+        tableName: table.name,
+        items: [],
+      });
+    }
+
+    items.forEach(i => {
+      order.items.push({
+        productId: i.productId,
+        name: i.name,
+        qty: i.qty ?? 1,
+        notes: i.notes ?? [],
+        customNote: i.customNote ?? "",
+      });
+    });
+
+    await order.save();
     res.json(order);
   } catch (err) {
-    console.error("Create order failed:", err);
-    res.status(500).json({ error: "Failed to create order" });
+    console.error(err);
+    res.sendStatus(500);
   }
 });
 
 /**
- * GET OPEN ORDERS (optionally by table)
+ * GET ACTIVE ORDER FOR TABLE
  */
-router.get("/", async (req, res) => {
+router.get("/table/:tableId", async (req, res) => {
   try {
-    const { tableId } = req.query;
-
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    const filter = {
-      createdAt: { $gte: since },
-    };
-
-    if (tableId) {
-      filter["table.id"] = tableId;
-    }
-
-    const orders = await KitchenOrder.find(filter).sort({
-      createdAt: -1,
+    const order = await KitchenOrder.findOne({
+      tableId: req.params.tableId,
+      closedAt: null,
     });
 
-    res.json(orders);
+    res.json(order || null);
   } catch (err) {
-    console.error("Fetch orders failed:", err);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    console.error(err);
+    res.sendStatus(500);
   }
 });
-
 
 /**
- * CLOSE ORDER (later used when table is settled)
+ * ADD ITEMS TO EXISTING ORDER
  */
-router.patch("/:id/close", async (req, res) => {
+router.post("/:orderId/items", async (req, res) => {
   try {
-    const order = await KitchenOrder.findByIdAndUpdate(
-      req.params.id,
-      { status: "closed" },
-      { new: true }
-    );
+    const { items } = req.body;
+    const order = await KitchenOrder.findById(req.params.orderId);
 
+    if (!order) return res.sendStatus(404);
+
+    items.forEach(i => {
+      order.items.push({
+        productId: i.productId,
+        name: i.name,
+        qty: i.qty ?? 1,
+        notes: i.notes ?? [],
+        customNote: i.customNote ?? "",
+      });
+    });
+
+    await order.save();
     res.json(order);
   } catch (err) {
-    console.error("Close order failed:", err);
-    res.status(500).json({ error: "Failed to close order" });
+    console.error(err);
+    res.sendStatus(500);
   }
 });
 
-router.patch("/:id/print-status", async (req, res) => {
+/**
+ * MARK NEW ITEMS AS PRINTED (AFTER SUCCESSFUL PRINT)
+ */
+router.post("/:orderId/print", async (req, res) => {
   try {
-    const { success, error } = req.body;
+    const order = await KitchenOrder.findById(req.params.orderId);
+    if (!order) return res.sendStatus(404);
 
-    const update = success
-      ? {
-          status: "printed",
-          printedAt: new Date(),
-          printError: null,
-        }
-      : {
-          status: "failed",
-          printError: error || "Unknown print error",
-        };
+    order.items.forEach(item => {
+      if (item.status === "new") {
+        item.status = "sent";
+        item.printedAt = new Date();
+      }
+    });
 
-    const order = await KitchenOrder.findByIdAndUpdate(
-      req.params.id,
-      update,
-      { new: true }
-    );
-
-    res.json(order);
+    await order.save();
+    res.json({ success: true });
   } catch (err) {
-    console.error("Update print status failed", err);
-    res.status(500).json({ error: "Failed to update print status" });
+    console.error(err);
+    res.sendStatus(500);
   }
 });
+
+/**
+ * MARK ITEM AS DELIVERED
+ */
+router.patch("/items/:itemId/delivered", async (req, res) => {
+  try {
+    const order = await KitchenOrder.findOne({
+      "items._id": req.params.itemId,
+    });
+
+    if (!order) return res.sendStatus(404);
+
+    const item = order.items.id(req.params.itemId);
+    item.status = "delivered";
+
+    await order.save();
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+});
+
+/**
+ * CLOSE ORDER (TABLE LEAVES)
+ */
+router.post("/:orderId/close", async (req, res) => {
+  try {
+    const order = await KitchenOrder.findById(req.params.orderId);
+    if (!order) return res.sendStatus(404);
+
+    order.closedAt = new Date();
+    await order.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+});
+
+
+
 
 export default router;

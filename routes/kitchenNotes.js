@@ -13,6 +13,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const note = await KitchenNote.create({
     label: req.body.label,
+    category:req.body.category
   });
   res.json(note);
 });

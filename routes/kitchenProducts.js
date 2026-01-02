@@ -6,11 +6,11 @@ const router = express.Router();
 // GET products
 router.get("/", async (req, res) => {
   const products = await KitchenProduct.find()
-    .populate("noteTemplateIds")
-    .sort({ sortOrder: 1 });
+    .populate("noteTemplateIds", "label");
 
   res.json(products);
 });
+
 
 // CREATE product
 router.post("/", async (req, res) => {
@@ -51,5 +51,68 @@ router.put("/:id", async (req, res) => {
   await KitchenProduct.findByIdAndUpdate(req.params.id, req.body);
   res.json({ ok: true });
 });
+
+ 
+
+// UPDATE PRODUCT MODIFIERS (NOTES)
+router.put("/:id/notes", async (req, res) => {
+  try {
+    const { noteTemplateIds } = req.body;
+
+    if (!Array.isArray(noteTemplateIds)) {
+      return res.status(400).json({ error: "noteTemplateIds must be an array" });
+    }
+
+    const updated = await KitchenProduct.findByIdAndUpdate(
+      req.params.id,
+      { noteTemplateIds },
+      { new: true }
+    ).populate("noteTemplateIds", "label");
+
+    if (!updated) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error("Update product notes failed:", err);
+    res.status(500).json({ error: "Failed to update product notes" });
+  }
+});
+
+// BULK APPLY MODIFIERS TO CATEGORY
+router.put("/bulk/apply-notes", async (req, res) => {
+  try {
+    const { category, noteTemplateIds, mode } = req.body;
+
+    if (!category || !Array.isArray(noteTemplateIds)) {
+      return res.status(400).json({ error: "Invalid payload" });
+    }
+
+    const products = await KitchenProduct.find({ category });
+
+    for (const product of products) {
+      let updatedNotes;
+
+      if (mode === "replace") {
+        updatedNotes = noteTemplateIds;
+      } else {
+        const existing = product.noteTemplateIds.map(id => id.toString());
+        updatedNotes = Array.from(
+          new Set([...existing, ...noteTemplateIds])
+        );
+      }
+
+      product.noteTemplateIds = updatedNotes;
+      await product.save();
+    }
+
+    res.json({ success: true, updatedCount: products.length });
+  } catch (err) {
+    console.error("Bulk apply modifiers failed:", err);
+    res.status(500).json({ error: "Bulk update failed" });
+  }
+});
+
 
 export default router;
