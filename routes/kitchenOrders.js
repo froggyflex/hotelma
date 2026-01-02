@@ -56,6 +56,21 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/active", async (req, res) => {
+  try {
+    const orders = await KitchenOrder.find(
+      { status: "active" },
+      { "table.id": 1 }
+    );
+
+    const openTableIds = orders.map(o => o.table.id);
+    res.json(openTableIds);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch open tables" });
+  }
+});
+
+
 /**
  * APPEND ITEMS TO EXISTING ORDER
  */
