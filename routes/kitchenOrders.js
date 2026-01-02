@@ -4,17 +4,14 @@ import KitchenOrder from "../models/KitchenOrder.js";
 const router = express.Router();
 
 /**
- * CREATE OR APPEND ORDER
- * Used when waiter sends an order (first time or later)
+ * GET ACTIVE ORDER BY TABLE
  */
-
-// GET ACTIVE ORDER BY TABLE
 router.get("/active/:tableId", async (req, res) => {
   try {
     const order = await KitchenOrder.findOne({
       "table.id": req.params.tableId,
       status: "active",
-    });
+    }).sort({ createdAt: -1 });
 
     res.json(order || null);
   } catch (err) {
@@ -23,35 +20,32 @@ router.get("/active/:tableId", async (req, res) => {
   }
 });
 
+/**
+ * CREATE NEW ORDER
+ */
 router.post("/", async (req, res) => {
   try {
-    const { table, items } = req.body;
+    const { table, items, orderName } = req.body;
 
     if (!table?.id || !items?.length) {
       return res.status(400).json({ message: "Invalid payload" });
     }
 
-    let order = await KitchenOrder.findOne({
-      tableId: table.id,
-      closedAt: null,
-    });
-
-    if (!order) {
-      order = new KitchenOrder({
-        tableId: table.id,
-        tableName: table.name,
-        items: [],
-      });
-    }
-
-    items.forEach(i => {
-      order.items.push({
+    const order = new KitchenOrder({
+      table: {
+        id: table.id,
+        name: table.name,
+      },
+      orderName: orderName || "",
+      status: "active",
+      items: items.map(i => ({
         productId: i.productId,
         name: i.name,
         qty: i.qty ?? 1,
         notes: i.notes ?? [],
         customNote: i.customNote ?? "",
-      });
+        status: "sent",
+      })),
     });
 
     await order.save();
@@ -63,31 +57,16 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * GET ACTIVE ORDER FOR TABLE
- */
-router.get("/table/:tableId", async (req, res) => {
-  try {
-    const order = await KitchenOrder.findOne({
-      tableId: req.params.tableId,
-      closedAt: null,
-    });
-
-    res.json(order || null);
-  } catch (err) {
-    console.error(err);
-    res.sendStatus(500);
-  }
-});
-
-/**
- * ADD ITEMS TO EXISTING ORDER
+ * APPEND ITEMS TO EXISTING ORDER
  */
 router.post("/:orderId/items", async (req, res) => {
   try {
     const { items } = req.body;
     const order = await KitchenOrder.findById(req.params.orderId);
 
-    if (!order) return res.sendStatus(404);
+    if (!order || order.status !== "active") {
+      return res.sendStatus(404);
+    }
 
     items.forEach(i => {
       order.items.push({
@@ -96,34 +75,12 @@ router.post("/:orderId/items", async (req, res) => {
         qty: i.qty ?? 1,
         notes: i.notes ?? [],
         customNote: i.customNote ?? "",
+        status: "sent",
       });
     });
 
     await order.save();
     res.json(order);
-  } catch (err) {
-    console.error(err);
-    res.sendStatus(500);
-  }
-});
-
-/**
- * MARK NEW ITEMS AS PRINTED (AFTER SUCCESSFUL PRINT)
- */
-router.post("/:orderId/print", async (req, res) => {
-  try {
-    const order = await KitchenOrder.findById(req.params.orderId);
-    if (!order) return res.sendStatus(404);
-
-    order.items.forEach(item => {
-      if (item.status === "new") {
-        item.status = "sent";
-        item.printedAt = new Date();
-      }
-    });
-
-    await order.save();
-    res.json({ success: true });
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
@@ -137,6 +94,7 @@ router.patch("/items/:itemId/delivered", async (req, res) => {
   try {
     const order = await KitchenOrder.findOne({
       "items._id": req.params.itemId,
+      status: "active",
     });
 
     if (!order) return res.sendStatus(404);
@@ -145,7 +103,7 @@ router.patch("/items/:itemId/delivered", async (req, res) => {
     item.status = "delivered";
 
     await order.save();
-    res.json({ success: true });
+    res.json(order); // ✅ RETURN UPDATED ORDER
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
@@ -153,14 +111,14 @@ router.patch("/items/:itemId/delivered", async (req, res) => {
 });
 
 /**
- * CLOSE ORDER (TABLE LEAVES)
+ * CLOSE ORDER
  */
 router.post("/:orderId/close", async (req, res) => {
   try {
     const order = await KitchenOrder.findById(req.params.orderId);
     if (!order) return res.sendStatus(404);
 
-    order.closedAt = new Date();
+    order.status = "closed";
     await order.save();
 
     res.json({ success: true });
@@ -170,7 +128,23 @@ router.post("/:orderId/close", async (req, res) => {
   }
 });
 
+/**
+ * UPDATE ORDER NAME
+ */
+router.patch("/:id/name", async (req, res) => {
+  try {
+    const { orderName } = req.body;
 
+    const order = await KitchenOrder.findByIdAndUpdate(
+      req.params.id,
+      { orderName },
+      { new: true }
+    );
 
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update order name" });
+  }
+});
 
 export default router;

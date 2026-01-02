@@ -4,76 +4,53 @@ const KitchenOrderItemSchema = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Product",
+      ref: "KitchenProduct",
     },
-
-    name: {
-      type: String,
-      required: true,
-    },
-
+    name: String,
     qty: {
       type: Number,
       default: 1,
-      min: 1,
     },
-
-    notes: {
-      type: [String],
-      default: [],
-    },
-
-    customNote: {
-      type: String,
-      default: "",
-    },
-
+    notes: [String],
+    customNote: String,
     status: {
       type: String,
-      enum: ["new", "sent", "delivered"],
-      default: "new",
-    },
-
-    printedAt: {
-      type: Date,
-      default: null,
+      enum: ["sent", "delivered"],
+      default: "sent",
     },
   },
-  { timestamps: true }
+  { _id: true }
 );
 
 const KitchenOrderSchema = new mongoose.Schema(
   {
-    tableId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Table",
+    table: {
+      id: {
+        type: String,
+        required: true,
+        index: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+    },
+
+    orderName: {
+      type: String,
+      trim: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["active", "closed"],
+      default: "active",
       index: true,
     },
 
-    tableName: {
-      type: String,
-      required: true,
-    },
-
-    closedAt: {
-      type: Date,
-      default: null,
-    },
-
-    items: {
-      type: [KitchenOrderItemSchema],
-      default: [],
-    },
+    items: [KitchenOrderItemSchema],
   },
   { timestamps: true }
-);
-
- 
-KitchenOrderSchema.index(
-  { tableId: 1, closedAt: 1 },
-  { unique: true, partialFilterExpression: { closedAt: null } }
 );
 
 export default mongoose.model("KitchenOrder", KitchenOrderSchema);
