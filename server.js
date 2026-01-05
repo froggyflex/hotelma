@@ -21,7 +21,7 @@ import kitchenProductsRoutes from "./routes/kitchenProducts.js";
 import kitchenNotesRoutes from "./routes/kitchenNotes.js";
 import kitchenTablesRoutes from "./routes/kitchenTables.js";
 import kitchenOrdersRoutes from "./routes/kitchenOrders.js";
-
+import exportsRouter from "./routes/exports.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,7 +45,7 @@ app.use("/api/kitchen/products", requireAuth, kitchenProductsRoutes);
 app.use("/api/kitchen/notes", requireAuth, kitchenNotesRoutes);
 app.use("/api/kitchen/tables", requireAuth, kitchenTablesRoutes);
 
-
+app.use("/api/exports", exportsRouter);
        
 // --- IARP ---
 app.use("/api/invoices", invoiceRoutes);
@@ -93,7 +93,7 @@ app.post("/register-token", requireAuth, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
+ 
 
 // GET all rooms
 app.get("/rooms", async (req, res) => {
