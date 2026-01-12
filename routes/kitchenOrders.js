@@ -102,6 +102,40 @@ router.post("/:orderId/items", async (req, res) => {
   }
 });
 
+ 
+/**
+ * MARK NEW ITEMS AS SENT (AFTER PRINT SUCCESS)
+ */
+router.post("/:orderId/print", async (req, res) => {
+  try {
+    const order = await KitchenOrder.findById(req.params.orderId);
+
+    if (!order || order.status !== "active") {
+      return res.sendStatus(404);
+    }
+
+    let changed = false;
+
+    order.items.forEach(item => {
+      if (item.status === "new") {
+        item.status = "sent";
+        item.printedAt = new Date();
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      await order.save();
+    }
+
+    res.json(order);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+});
+
+
 /**
  * MARK ITEM AS DELIVERED
  */
