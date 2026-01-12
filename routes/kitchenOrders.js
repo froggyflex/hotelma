@@ -103,11 +103,15 @@ router.post("/:orderId/items", async (req, res) => {
 });
 
  
-/**
- * MARK NEW ITEMS AS SENT (AFTER PRINT SUCCESS)
- */
+// POST /api/kitchen/orders/:orderId/print
 router.post("/:orderId/print", async (req, res) => {
   try {
+    const { itemIds } = req.body;
+
+    if (!Array.isArray(itemIds) || itemIds.length === 0) {
+      return res.status(400).json({ error: "itemIds required" });
+    }
+
     const order = await KitchenOrder.findById(req.params.orderId);
 
     if (!order || order.status !== "active") {
@@ -117,8 +121,11 @@ router.post("/:orderId/print", async (req, res) => {
     let changed = false;
 
     order.items.forEach(item => {
-      if (item.status === "new") {
-        item.status = "sent";
+      if (
+        itemIds.includes(item._id.toString()) &&
+        item.printed !== true
+      ) {
+        item.printed = true;
         item.printedAt = new Date();
         changed = true;
       }
@@ -130,10 +137,11 @@ router.post("/:orderId/print", async (req, res) => {
 
     res.json(order);
   } catch (err) {
-    console.error(err);
+    console.error("markOrderPrinted error:", err);
     res.sendStatus(500);
   }
 });
+
 
 
 /**
