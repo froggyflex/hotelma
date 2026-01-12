@@ -5,22 +5,51 @@ const KitchenOrderItemSchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "KitchenProduct",
+      required: true,
     },
-    name: String,
+
+    name: {
+      type: String,
+      required: true,
+    },
+
     qty: {
       type: Number,
       default: 1,
+      min: 1,
     },
-    notes: [String],
-    customNote: String,
+
+    notes: {
+      type: [String],
+      default: [],
+    },
+
+    customNote: {
+      type: String,
+      default: "",
+    },
+
+     
     status: {
       type: String,
       enum: ["new", "sent", "delivered"],
       default: "new",
     },
+
+     
+    printed: {
+      type: Boolean,
+      default: false,
+    },
+
+    printedAt: {
+      type: Date,
+      default: null,
+    },
   },
-  { _id: true }
+  { _id: true, timestamps: false }
 );
+
 
 const KitchenOrderSchema = new mongoose.Schema(
   {
@@ -52,5 +81,37 @@ const KitchenOrderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+KitchenOrderItemSchema.pre("save", function () {
+  if (
+    (this.status === "sent" || this.status === "delivered") &&
+    this.printed !== true
+  ) {
+    throw new Error(
+      "Illegal state: item cannot be sent/delivered without printing"
+    );
+  }
+});
+KitchenOrderItemSchema.pre("findOneAndUpdate", function () {
+  const update = this.getUpdate();
+
+  const status =
+    update?.status ??
+    update?.$set?.status;
+
+  const printed =
+    update?.printed ??
+    update?.$set?.printed;
+
+  if (
+    (status === "sent" || status === "delivered") &&
+    printed !== true
+  ) {
+    throw new Error(
+      "Illegal state transition in update"
+    );
+  }
+});
+
 
 export default mongoose.model("KitchenOrder", KitchenOrderSchema);
