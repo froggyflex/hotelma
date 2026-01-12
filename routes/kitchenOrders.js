@@ -90,7 +90,7 @@ router.post("/:orderId/items", async (req, res) => {
         qty: i.qty ?? 1,
         notes: i.notes ?? [],
         customNote: i.customNote ?? "",
-        status: "sent",
+        status: "new",
       });
     });
 
