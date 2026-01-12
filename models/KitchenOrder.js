@@ -15,8 +15,8 @@ const KitchenOrderItemSchema = new mongoose.Schema(
     customNote: String,
     status: {
       type: String,
-      enum: ["sent", "delivered"],
-      default: "sent",
+      enum: ["new", "sent", "delivered"],
+      default: "new",
     },
   },
   { _id: true }
