@@ -46,6 +46,11 @@ const KitchenOrderItemSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    
+    printAttemptId: {
+      type: String,
+      default: null,
+    }
   },
   { _id: true, timestamps: false }
 );

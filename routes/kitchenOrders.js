@@ -102,18 +102,20 @@ router.post("/:orderId/items", async (req, res) => {
   }
 });
 
- 
 // POST /api/kitchen/orders/:orderId/print
 router.post("/:orderId/print", async (req, res) => {
   try {
-    const { itemIds } = req.body;
+    const { itemIds, attemptId } = req.body;
+
+    if (!attemptId) {
+      return res.status(400).json({ error: "attemptId required" });
+    }
 
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
       return res.status(400).json({ error: "itemIds required" });
     }
 
     const order = await KitchenOrder.findById(req.params.orderId);
-
     if (!order || order.status !== "active") {
       return res.sendStatus(404);
     }
@@ -127,6 +129,7 @@ router.post("/:orderId/print", async (req, res) => {
       ) {
         item.printed = true;
         item.printedAt = new Date();
+        item.printAttemptId = attemptId;
         changed = true;
       }
     });
@@ -135,12 +138,13 @@ router.post("/:orderId/print", async (req, res) => {
       await order.save();
     }
 
-    res.json(order);
+    res.json({ success: true });
   } catch (err) {
     console.error("markOrderPrinted error:", err);
     res.sendStatus(500);
   }
 });
+
 
 
 
