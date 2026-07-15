@@ -161,6 +161,8 @@ app.delete("/rooms/:id", async (req, res) => {
 app.get('/bookings', async (req, res)  =>{
 
   try {
+      // Booking timelines must never be served from a stale browser/proxy cache.
+      res.set('Cache-Control', 'no-store');
       const bookings = await Booking.find().lean();
 
       // Convert _id to id to keep frontend compatibility
@@ -197,9 +199,21 @@ app.post("/bookings", async (req, res) => {
 // UPDATE booking
 app.put("/bookings/:id", async (req, res) => {
   try {
-    await Booking.findByIdAndUpdate(req.params.id, req.body);
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    ).lean();
 
-    res.json({ ok: true });
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    res.json({
+      ...booking,
+      id: booking._id.toString(),
+      _id: undefined,
+    });
   } catch (err) {
     console.error("Failed to update booking:", err);
     res.status(500).json({ error: "Server error" });
@@ -209,9 +223,13 @@ app.put("/bookings/:id", async (req, res) => {
 // DELETE booking
 app.delete("/bookings/:id", async (req, res) => {
   try {
-    await Booking.findByIdAndDelete(req.params.id);
+    const deleted = await Booking.findByIdAndDelete(req.params.id);
 
-    res.json({ ok: true });
+    if (!deleted) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    res.json({ ok: true, id: req.params.id });
   } catch (err) {
     console.error("Failed to delete booking:", err);
     res.status(500).json({ error: "Server error" });
