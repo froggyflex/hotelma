@@ -158,6 +158,75 @@ app.delete("/rooms/:id", async (req, res) => {
 
 // --- BOOKINGS ---
 
+const BOOKING_FIELDS = [
+  "guestName", "room", "checkIn", "checkOut", "adults", "kids", "channel",
+  "totalAmount", "deposit", "price", "paid", "notes"
+];
+
+function bookingPayload(body = {}) {
+  return Object.fromEntries(
+    BOOKING_FIELDS
+      .filter((field) => Object.prototype.hasOwnProperty.call(body, field))
+      .map((field) => [field, body[field]])
+  );
+}
+
+async function validateBooking(payload, excludeId) {
+  const checkIn = String(payload.checkIn || "");
+  const checkOut = String(payload.checkOut || "");
+  const roomName = String(payload.room || "").trim();
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  const isRealDate = (value) => {
+    if (!datePattern.test(value)) return false;
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+  };
+
+  if (!String(payload.guestName || "").trim() || !roomName) {
+    return { status: 400, error: "Guest name and room are required." };
+  }
+  if (!isRealDate(checkIn) || !isRealDate(checkOut) || checkOut <= checkIn) {
+    return { status: 400, error: "Check-out must be after check-in." };
+  }
+
+  const room = await Room.findOne({ name: roomName }).lean();
+  if (!room) return { status: 400, error: "The selected room does not exist." };
+
+  const guests = Math.max(0, Number(payload.adults) || 0) + Math.max(0, Number(payload.kids) || 0);
+  if (!Number.isFinite(Number(payload.adults)) || Number(payload.adults) < 1 || Number(payload.kids || 0) < 0) {
+    return { status: 400, error: "A booking requires at least one adult and cannot have negative guest counts." };
+  }
+  if (guests > Number(room.capacity || 0)) {
+    return {
+      status: 409,
+      error: `Room ${roomName} has capacity for ${room.capacity} guests, but this booking has ${guests}.`
+    };
+  }
+
+  const conflictQuery = {
+    room: roomName,
+    checkIn: { $lt: checkOut },
+    checkOut: { $gt: checkIn },
+  };
+  if (excludeId) conflictQuery._id = { $ne: excludeId };
+
+  const conflict = await Booking.findOne(conflictQuery).lean();
+  if (conflict) {
+    return {
+      status: 409,
+      error: `Room ${roomName} is already booked from ${conflict.checkIn} to ${conflict.checkOut}.`,
+      conflict: {
+        id: conflict._id.toString(),
+        guestName: conflict.guestName,
+        checkIn: conflict.checkIn,
+        checkOut: conflict.checkOut,
+      }
+    };
+  }
+
+  return null;
+}
+
 app.get('/bookings', async (req, res)  =>{
 
   try {
@@ -183,7 +252,13 @@ app.get('/bookings', async (req, res)  =>{
 // CREATE booking
 app.post("/bookings", async (req, res) => {
   try {
-    const booking = await Booking.create(req.body);
+    const payload = bookingPayload(req.body);
+    const validationError = await validateBooking(payload);
+    if (validationError) {
+      return res.status(validationError.status).json(validationError);
+    }
+
+    const booking = await Booking.create(payload);
 
     res.json({
       ...booking.toObject(),
@@ -199,9 +274,20 @@ app.post("/bookings", async (req, res) => {
 // UPDATE booking
 app.put("/bookings/:id", async (req, res) => {
   try {
+    const existing = await Booking.findById(req.params.id).lean();
+    if (!existing) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const payload = { ...bookingPayload(existing), ...bookingPayload(req.body) };
+    const validationError = await validateBooking(payload, req.params.id);
+    if (validationError) {
+      return res.status(validationError.status).json(validationError);
+    }
+
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      payload,
       { new: true, runValidators: true }
     ).lean();
 
