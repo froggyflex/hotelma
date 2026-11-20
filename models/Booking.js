@@ -14,6 +14,8 @@ const BookingSchema = new mongoose.Schema({
   price: { type: Number, default: 0 },
   paid: { type: Boolean, default: false },
   notes: { type: String, default: "" },
+  status: { type: String, enum: ["confirmed", "no-show"], default: "confirmed" },
+  noShowAt: Date,
 }, { timestamps: true });
 
 export default mongoose.model("Booking", BookingSchema);

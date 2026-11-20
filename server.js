@@ -145,6 +145,29 @@ app.put("/rooms/:id", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+// Update only the cleaning status, and reject changes based on stale room data.
+app.patch("/rooms/:id/cleaning", async (req, res) => {
+  try {
+    const { status, expectedStatus } = req.body;
+    if (!["dirty", "in-progress", "clean"].includes(status) ||
+        ![null, "", "free", "dirty", "in-progress", "clean"].includes(expectedStatus)) {
+      return res.status(400).json({ error: "Choose a valid cleaning status." });
+    }
+
+    const room = await Room.findOneAndUpdate(
+      { _id: req.params.id, status: expectedStatus },
+      { $set: { status } },
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!room) return res.status(409).json({ error: "The room status changed. Review the updated room and try again." });
+    return res.json({ ...room, id: room._id.toString(), _id: undefined });
+  } catch (error) {
+    console.error("Failed to update cleaning status:", error);
+    return res.status(500).json({ error: "Could not update the cleaning status." });
+  }
+});
+
 // DELETE room
 app.delete("/rooms/:id", async (req, res) => {
   try {
@@ -171,7 +194,7 @@ function bookingPayload(body = {}) {
   );
 }
 
-async function validateBooking(payload, excludeId) {
+async function validateBooking(payload, existing) {
   const checkIn = String(payload.checkIn || "");
   const checkOut = String(payload.checkOut || "");
   const roomName = String(payload.room || "").trim();
@@ -191,6 +214,10 @@ async function validateBooking(payload, excludeId) {
 
   const room = await Room.findOne({ name: roomName }).lean();
   if (!room) return { status: 400, error: "The selected room does not exist." };
+  if (room.status === "maintenance" &&
+      (existing?.room !== roomName || existing?.checkIn !== checkIn || existing?.checkOut !== checkOut)) {
+    return { status: 409, error: "This room is under maintenance." };
+  }
 
   const guests = Math.max(0, Number(payload.adults) || 0) + Math.max(0, Number(payload.kids) || 0);
   if (!Number.isFinite(Number(payload.adults)) || Number(payload.adults) < 1 || Number(payload.kids || 0) < 0) {
@@ -207,8 +234,9 @@ async function validateBooking(payload, excludeId) {
     room: roomName,
     checkIn: { $lt: checkOut },
     checkOut: { $gt: checkIn },
+    status: { $ne: "no-show" },
   };
-  if (excludeId) conflictQuery._id = { $ne: excludeId };
+  if (existing) conflictQuery._id = { $ne: existing._id };
 
   const conflict = await Booking.findOne(conflictQuery).lean();
   if (conflict) {
@@ -233,7 +261,7 @@ app.get('/bookings', async (req, res)  =>{
       // Booking timelines must never be served from a stale browser/proxy cache.
       res.set('Cache-Control', 'no-store');
       const bookings = await Booking.find().lean();
-
+       
       // Convert _id to id to keep frontend compatibility
       const normalized = bookings.map(b => ({
         ...b,
@@ -279,20 +307,24 @@ app.put("/bookings/:id", async (req, res) => {
       return res.status(404).json({ error: "Booking not found" });
     }
 
-    const payload = { ...bookingPayload(existing), ...bookingPayload(req.body) };
-    const validationError = await validateBooking(payload, req.params.id);
+    if (existing.status === "no-show") {
+      return res.status(409).json({ error: "This booking is marked as a no-show and is in reservation history." });
+    }
+    const changes = bookingPayload(req.body);
+    const payload = { ...bookingPayload(existing), ...changes };
+    const validationError = await validateBooking(payload, existing);
     if (validationError) {
       return res.status(validationError.status).json(validationError);
     }
 
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      payload,
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, status: { $ne: "no-show" } },
+      { $set: changes },
       { new: true, runValidators: true }
     ).lean();
 
     if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
+      return res.status(409).json({ error: "The booking changed. Refresh bookings and try again." });
     }
 
     res.json({
@@ -303,6 +335,23 @@ app.put("/bookings/:id", async (req, res) => {
   } catch (err) {
     console.error("Failed to update booking:", err);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Mark a booking as a no-show without removing its history.
+app.patch("/bookings/:id/no-show", async (req, res) => {
+  try {
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, status: { $ne: "no-show" } },
+      { $set: { status: "no-show", noShowAt: new Date() } },
+      { new: true, runValidators: true }
+    ).lean() || await Booking.findById(req.params.id).lean();
+
+    if (!booking) return res.status(404).json({ error: "Booking not found." });
+    return res.json({ ...booking, id: booking._id.toString(), _id: undefined });
+  } catch (error) {
+    console.error("Failed to mark no-show:", error);
+    return res.status(500).json({ error: "Could not mark this booking as a no-show." });
   }
 });
 

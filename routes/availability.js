@@ -30,11 +30,11 @@ router.get("/", async (req, res) => {
     const people = Number(adults) + Number(kids);
 
     const rooms = await Room.find();
-    const bookings = await Booking.find();
+    const bookings = await Booking.find({ status: { $ne: "no-show" } });
 
     // Step 1: find all rooms free for the range
     const freeRooms = rooms.filter(room =>
-      room.capacity >= people &&
+      room.status !== "maintenance" && room.capacity >= people &&
       roomIsFree(room, startDate, endDate, bookings)
     );
 

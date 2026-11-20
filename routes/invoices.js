@@ -99,6 +99,7 @@ function nextAA() {
     invoiceUid: getTag("invoiceUid"),
     authenticationCode: getTag("authenticationCode"),
     qrUrl: getTag("qrUrl"),
+    message: getTag("message"),
     raw: decoded,
   };
 }
@@ -175,7 +176,7 @@ router.post("/submit", async (req, res) => {
       
         return res.status(400).json({
         success: false,
-        errors: result.errors || [{ code: "AADE", message: result.error || "Unknown error" }],
+        errors: [{ code: parsed?.statusCode || "AADE", message: parsed?.message || "AADE did not return a MARK." }],
       });
       
     }
